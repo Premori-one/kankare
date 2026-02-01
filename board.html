@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>공지사항 - 韓カレ</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --cream: #FDF8F3;
+            --blush: #F5E6E0;
+            --rose: #E8B4B8;
+            --deep-rose: #C77D7A;
+            --burgundy: #8B4B5A;
+            --charcoal: #2D2A2E;
+            --gold: #C9A962;
+            --soft-white: #FFFFFF;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: var(--cream);
+            color: var(--charcoal);
+            line-height: 1.7;
+            min-height: 100vh;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 1.5rem 4rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(253, 248, 243, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 30px rgba(139, 75, 90, 0.08);
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--burgundy);
+            letter-spacing: -0.02em;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 3rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--charcoal);
+            font-weight: 400;
+            font-size: 0.95rem;
+            position: relative;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--gold);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--burgundy);
+        }
+
+        .nav-links a:hover::after,
+        .nav-links a.active::after {
+            width: 100%;
+        }
+
+        /* Main Content */
+        main {
+            padding-top: 120px;
+            min-height: 100vh;
+        }
+
+        /* Page Hero */
+        .page-hero {
+            text-align: center;
+            padding: 4rem 2rem;
+            position: relative;
+        }
+
+        .page-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background:
+                radial-gradient(ellipse at 30% 0%, var(--blush) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 100%, rgba(232, 180, 184, 0.2) 0%, transparent 40%);
+            pointer-events: none;
+        }
+
+        .page-hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .page-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: var(--burgundy);
+            margin-bottom: 1.5rem;
+        }
+
+        .page-eyebrow::before,
+        .page-eyebrow::after {
+            content: '';
+            width: 40px;
+            height: 1px;
+            background: var(--gold);
+        }
+
+        .page-hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 400;
+            margin-bottom: 1rem;
+        }
+
+        .page-hero h1 em {
+            font-style: italic;
+            color: var(--burgundy);
+        }
+
+        .page-hero p {
+            color: var(--charcoal);
+            opacity: 0.7;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        /* Board Section */
+        .board-section {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem 4rem 4rem;
+        }
+
+        /* Category Tabs */
+        .category-tabs {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+        }
+
+        .tab-btn {
+            padding: 0.7rem 1.5rem;
+            border: 1px solid var(--blush);
+            border-radius: 50px;
+            background: var(--soft-white);
+            color: var(--charcoal);
+            font-family: inherit;
+            font-size: 0.9rem;
+            font-weight: 400;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn:hover {
+            border-color: var(--rose);
+            background: var(--blush);
+        }
+
+        .tab-btn.active {
+            background: var(--burgundy);
+            color: var(--soft-white);
+            border-color: var(--burgundy);
+        }
+
+        /* Post List */
+        .post-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .post-item {
+            background: var(--soft-white);
+            border-radius: 16px;
+            padding: 1.75rem 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .post-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(139, 75, 90, 0.1);
+        }
+
+        .post-badge {
+            flex-shrink: 0;
+            padding: 0.35rem 0.9rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+        }
+
+        .badge-notice {
+            background: linear-gradient(135deg, var(--burgundy), var(--deep-rose));
+            color: var(--soft-white);
+        }
+
+        .badge-announce {
+            background: linear-gradient(135deg, var(--gold), #d4b56a);
+            color: var(--charcoal);
+        }
+
+        .badge-event {
+            background: linear-gradient(135deg, var(--rose), var(--blush));
+            color: var(--burgundy);
+        }
+
+        .badge-update {
+            background: var(--charcoal);
+            color: var(--soft-white);
+        }
+
+        .post-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .post-title {
+            font-size: 1.05rem;
+            font-weight: 500;
+            margin-bottom: 0.35rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .post-excerpt {
+            font-size: 0.88rem;
+            color: var(--charcoal);
+            opacity: 0.6;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .post-meta {
+            flex-shrink: 0;
+            text-align: right;
+        }
+
+        .post-date {
+            font-size: 0.82rem;
+            color: var(--charcoal);
+            opacity: 0.5;
+        }
+
+        .post-views {
+            font-size: 0.78rem;
+            color: var(--deep-rose);
+            margin-top: 0.2rem;
+        }
+
+        /* Pinned indicator */
+        .post-item.pinned {
+            border-left: 3px solid var(--burgundy);
+            background: linear-gradient(135deg, var(--soft-white) 0%, rgba(245, 230, 224, 0.3) 100%);
+        }
+
+        .pin-icon {
+            display: none;
+            color: var(--burgundy);
+            font-size: 0.85rem;
+        }
+
+        .post-item.pinned .pin-icon {
+            display: inline;
+            margin-right: 0.4rem;
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 3rem;
+        }
+
+        .page-btn {
+            width: 42px;
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--blush);
+            border-radius: 12px;
+            background: var(--soft-white);
+            color: var(--charcoal);
+            font-family: inherit;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .page-btn:hover {
+            border-color: var(--rose);
+            background: var(--blush);
+        }
+
+        .page-btn.active {
+            background: var(--burgundy);
+            color: var(--soft-white);
+            border-color: var(--burgundy);
+        }
+
+        .page-btn svg {
+            width: 18px;
+            height: 18px;
+            stroke: currentColor;
+        }
+
+        /* Footer */
+        footer {
+            padding: 4rem;
+            background: var(--charcoal);
+            color: var(--soft-white);
+            margin-top: 4rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            color: var(--soft-white);
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--gold);
+        }
+
+        .footer-copyright {
+            font-size: 0.85rem;
+            opacity: 0.5;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            nav {
+                padding: 1.5rem 2rem;
+            }
+
+            .board-section {
+                padding: 2rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .category-tabs {
+                flex-wrap: wrap;
+            }
+
+            .post-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.75rem;
+            }
+
+            .post-meta {
+                text-align: left;
+            }
+
+            .footer-content {
+                flex-direction: column;
+                gap: 2rem;
+                text-align: center;
+            }
+
+            .footer-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <a href="index.html" class="logo">韓カレ</a>
+        <ul class="nav-links">
+            <li><a href="index.html">홈</a></li>
+            <li><a href="board.html" class="active">게시판</a></li>
+            <li><a href="contact.html">문의하기</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <!-- Page Hero -->
+        <section class="page-hero">
+            <div class="page-hero-content">
+                <div class="page-eyebrow">Notice Board</div>
+                <h1><em>공지사항</em> & 게시판</h1>
+                <p>韓カレ의 최신 소식과 공지사항을 확인하세요.</p>
+            </div>
+        </section>
+
+        <!-- Board Section -->
+        <section class="board-section">
+            <!-- Category Tabs -->
+            <div class="category-tabs">
+                <button class="tab-btn active" data-category="all">전체</button>
+                <button class="tab-btn" data-category="notice">공지</button>
+                <button class="tab-btn" data-category="announce">소식</button>
+                <button class="tab-btn" data-category="event">이벤트</button>
+                <button class="tab-btn" data-category="update">업데이트</button>
+            </div>
+
+            <!-- Post List -->
+            <div class="post-list">
+                <a href="#" class="post-item pinned" data-category="notice">
+                    <span class="post-badge badge-notice">공지</span>
+                    <div class="post-content">
+                        <div class="post-title"><span class="pin-icon">📌</span>韓カレ 서비스 이용약관 안내</div>
+                        <div class="post-excerpt">서비스 이용 전 반드시 확인해 주세요. 이용약관 및 개인정보처리방침이 업데이트되었습니다.</div>
+                    </div>
+                    <div class="post-meta">
+                        <div class="post-date">2026.02.01</div>
+                        <div class="post-views">조회 1,284</div>
+                    </div>
+                </a>
+
+                <a href="#" class="post-item pinned" data-category="notice">
+                    <span class="post-badge badge-notice">공지</span>
+                    <div class="post-content">
+                        <div class="post-title"><span class="pin-icon">📌</span>안전한 만남을 위한 가이드라인</div>
+                        <div class="post-excerpt">보증금 제도 및 매너 평가 시스템에 대한 상세 안내입니다.</div>
+                    </div>
+                    <div class="post-meta">
+                        <div class="post-date">2026.01.28</div>
+                        <div class="post-views">조회 956</div>
+                    </div>
+                </a>
+
+                <a href="#" class="post-item" data-category="announce">
+                    <span class="post-badge badge-announce">소식</span>
+                    <div class="post-content">
+                        <div class="post-title">韓カレ 공식 런칭 소식을 전해드립니다</div>
+                        <div class="post-excerpt">일본 여성과 한국 남성을 위한 프리미엄 매칭 플랫폼, 드디어 정식 오픈합니다.</div>
+                    </div>
+                    <div class="post-meta">
+                        <div class="post-date">2026.01.25</div>
+                        <div class="post-views">조회 2,103</div>
+                    </div>
+                </a>
+
+                <a href="#" class="post-item" data-category="event">
+                    <span class="post-badge badge-event">이벤트</span>
+                    <div class="post-content">
+                        <div class="post-title">얼리버드 회원 모집 이벤트 🎉</div>
+                        <div class="post-excerpt">첫 3개월 프리미엄 서비스를 무료로 체험할 수 있는 특별 이벤트를 진행합니다.</div>
+                    </div>
+                    <div class="post-meta">
+                        <div class="post-date">2026.01.22</div>
+                        <div class="post-views">조회 1,847</div>
+                    </div>
+                </a>
+
+                <a href="#" class="post-item" data-category="update">
+                    <span class="post-badge badge-update">업데이트</span>
+                    <div class="post-content">
+                        <div class="post-title">프로필 인증 시스템 강화 안내</div>
+                        <div class="post-excerpt">더욱 안전한 서비스를 위해 신원 인증 절차가 개선되었습니다.</div>
+                    </div>
+                    <div class="post-meta">
+                        <div class="post-date">2026.01.20</div>
+                        <div class="post-views">조회 632</div>
+                    </div>
+                </a>
+
+                <a href="#" class="post-item" data-category="announce">
+                    <span class="post-badge badge-announce">소식</span>
+                    <div class="post-content">
+                        <div class="post-title">도쿄·오사카 지역 매칭 서비스 확대</div>
+                        <div class="post-excerpt">수도권 및 간사이 지역의 매칭 서비스 범위가 확대됩니다.</div>
+                    </div>
+                    <div class="post-meta">
+                        <div class="post-date">2026.01.18</div>
+                        <div class="post-views">조회 789</div>
+                    </div>
+                </a>
+
+                <a href="#" class="post-item" data-category="notice">
+                    <span class="post-badge badge-notice">공지</span>
+                    <div class="post-content">
+                        <div class="post-title">설 연휴 고객센터 운영 안내</div>
+                        <div class="post-excerpt">1월 28일 ~ 1월 30일 기간 고객센터 운영 시간이 변경됩니다.</div>
+                    </div>
+                    <div class="post-meta">
+                        <div class="post-date">2026.01.15</div>
+                        <div class="post-views">조회 412</div>
+                    </div>
+                </a>
+
+                <a href="#" class="post-item" data-category="event">
+                    <span class="post-badge badge-event">이벤트</span>
+                    <div class="post-content">
+                        <div class="post-title">친구 초대 이벤트 - 함께하면 더 좋은 인연</div>
+                        <div class="post-excerpt">친구를 초대하고 특별한 혜택을 받아보세요.</div>
+                    </div>
+                    <div class="post-meta">
+                        <div class="post-date">2026.01.12</div>
+                        <div class="post-views">조회 1,056</div>
+                    </div>
+                </a>
+
+                <a href="#" class="post-item" data-category="update">
+                    <span class="post-badge badge-update">업데이트</span>
+                    <div class="post-content">
+                        <div class="post-title">매칭 알고리즘 v2.0 업데이트</div>
+                        <div class="post-excerpt">더욱 정확한 매칭을 위해 알고리즘이 대폭 개선되었습니다.</div>
+                    </div>
+                    <div class="post-meta">
+                        <div class="post-date">2026.01.10</div>
+                        <div class="post-views">조회 528</div>
+                    </div>
+                </a>
+
+                <a href="#" class="post-item" data-category="announce">
+                    <span class="post-badge badge-announce">소식</span>
+                    <div class="post-content">
+                        <div class="post-title">韓カレ 공식 인스타그램 오픈</div>
+                        <div class="post-excerpt">SNS에서도 韓カレ의 소식을 만나보세요. 팔로우하고 이벤트에 참여하세요!</div>
+                    </div>
+                    <div class="post-meta">
+                        <div class="post-date">2026.01.08</div>
+                        <div class="post-views">조회 1,321</div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination">
+                <button class="page-btn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M15 18l-6-6 6-6"/>
+                    </svg>
+                </button>
+                <button class="page-btn active">1</button>
+                <button class="page-btn">2</button>
+                <button class="page-btn">3</button>
+                <button class="page-btn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M9 18l6-6-6-6"/>
+                    </svg>
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">(주)프레모리</div>
+            <ul class="footer-links">
+                <li><a href="index.html">홈</a></li>
+                <li><a href="board.html">게시판</a></li>
+                <li><a href="contact.html">문의하기</a></li>
+                <li><a href="#">이용약관</a></li>
+                <li><a href="#">개인정보처리방침</a></li>
+            </ul>
+            <div class="footer-copyright">© 2026 韓カレ All rights reserved.</div>
+        </div>
+    </footer>
+
+    <script>
+        // Category tab filtering
+        const tabs = document.querySelectorAll('.tab-btn');
+        const posts = document.querySelectorAll('.post-item');
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+
+                const category = tab.dataset.category;
+
+                posts.forEach(post => {
+                    if (category === 'all' || post.dataset.category === category) {
+                        post.style.display = 'flex';
+                    } else {
+                        post.style.display = 'none';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
